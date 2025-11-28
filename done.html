@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>You're all set – Chime</title>
+  <style>
+    :root {
+      --chime-green: #2bd67b;
+      --chime-green-hover: #24b96a;
+      --dark-bg: #0b1117;
+      --text-light: #ffffff;
+      --text-muted: #9aa3b2;
+    }
+    * {margin:0;padding:0;box-sizing:border-box;}
+    body {
+      background: var(--dark-bg);
+      color: var(--text-light);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      display:flex;justify-content:center;align-items:center;
+      height:100vh;text-align:center;padding:20px;overflow:hidden;
+    }
+    main {
+      width:100%;max-width:400px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:20px;opacity:0;animation:fadeIn 1s ease forwards;
+    }
+    .logo img {
+      width:110px;height:auto;margin-bottom:20px;
+      opacity:0;animation:fadeIn 1s 0.3s ease forwards;
+    }
+    .success-icon {
+      width:80px;height:80px;border-radius:50%;
+      background:var(--chime-green);
+      display:flex;justify-content:center;align-items:center;
+      color:#000;font-size:36px;font-weight:900;
+      box-shadow:0 0 25px rgba(43,214,123,0.5);
+      position:relative;opacity:0;animation:popIn 0.6s 0.6s ease forwards;
+    }
+    .success-icon::after {
+      content:"";position:absolute;width:80px;height:80px;border-radius:50%;
+      border:2px solid var(--chime-green);opacity:0;animation:pulse 1.5s 1.2s ease infinite;
+    }
+    h1 {
+      font-size:28px;font-weight:700;margin-top:10px;
+      opacity:0;animation:fadeIn 0.8s 1s ease forwards;
+    }
+    p {
+      font-size:16px;color:var(--text-muted);line-height:1.6;
+      opacity:0;animation:fadeIn 0.8s 1.2s ease forwards;
+    }
+    .btn {
+      margin-top:20px;padding:14px 36px;border:none;border-radius:28px;
+      background:var(--chime-green);color:#000;font-weight:600;font-size:16px;
+      cursor:pointer;opacity:0;animation:fadeIn 0.8s 1.6s ease forwards;
+      transition:background 0.2s ease;
+    }
+    .btn:hover {background:var(--chime-green-hover);}
+    @keyframes fadeIn {to{opacity:1;transform:none;}}
+    @keyframes popIn {0%{transform:scale(0.5);opacity:0;}100%{transform:scale(1);opacity:1;}}
+    @keyframes pulse {0%{transform:scale(1);opacity:0.6;}100%{transform:scale(1.8);opacity:0;}}
+  </style>
+</head>
+<body>
+  <main id="mainContent">
+<div class="success-icon">✓</div>
+    <h1>You’re all set!</h1>
+    <p>You can close this window and return to the Chime app.</p>
+    <button class="btn" id="continueBtn">Continue to Chime</button>
+  </main>
+
+  <script>
+    const continueBtn = document.getElementById('continueBtn');
+    continueBtn.addEventListener('click', () => {
+      window.location.href = 'https://www.chime.com';
+    });
+  </script>
+</body>
+</html>

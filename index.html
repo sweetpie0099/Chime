@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Secure your account – Chime</title>
+
+  <style>
+    :root {
+      --chime-green: #2bd67b;
+      --text: #0b1117;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #ffffff;
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 60px;
+      min-height: 100vh;
+    }
+
+    main {
+      width: 100%;
+      max-width: 430px;
+      text-align: left;
+      padding: 0 20px;
+    }
+
+    .logo img {
+      width: 115px;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-size: 17px;
+      line-height: 1.45;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      width: 100%;
+      background: var(--chime-green);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 16px 0;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="logo">
+      <img src="chime-logo.jpeg" alt="Chime logo">
+    </div>
+
+    <h1>Let's secure<br>your account</h1>
+
+    <p>
+      We noticed a sign-in attempt that wasn’t you. To protect your account,
+      you need to reset your password.
+    </p>
+
+    <button class="btn" onclick="window.location.href='reset_password.html'">
+      Continue
+    </button>
+
+  </main>
+</body>
+</html>
